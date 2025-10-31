@@ -1,19 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 using MableAPI.Data;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Needed for Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add EF Core (SQLite) and the seeder service
+// Add EF Core (SQLite)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=app.db"));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// If in development, use Swagger. good for seeing the API calls available and their documentation
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -21,3 +22,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.Run();
+
+//needed for WebApplicationFactory in tests
+public partial class Program { }

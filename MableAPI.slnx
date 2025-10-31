@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="MableAPI.Tests/MableAPI.Tests.csproj" />
   <Project Path="MableAPI/MableAPI.csproj" />
 </Solution>
