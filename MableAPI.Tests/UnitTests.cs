@@ -8,11 +8,11 @@ namespace MableAPI.Tests;
 
 public class UnitTests : IClassFixture<WebApplicationFactory<Program>>
 {
-    private readonly WebApplicationFactory<Program> _factory;
+    private readonly WebApplicationFactory<Program> factory;
 
     public UnitTests(WebApplicationFactory<Program> factory)
     {
-        _factory = factory.WithWebHostBuilder(builder =>
+        this.factory = factory.WithWebHostBuilder(builder =>
         {
               builder.ConfigureServices(services =>
               {
@@ -27,7 +27,7 @@ public class UnitTests : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task Test1()
     {
-        var client = _factory.CreateClient();
+        var client = this.factory.CreateClient();
 
         var response = await client.GetStringAsync("/");
 

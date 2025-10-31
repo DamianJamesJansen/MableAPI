@@ -13,6 +13,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=app.db"));
 
+//these need to be added. these services are getting injected every time needed. which will be for calls to the endpoints
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<ProductService>();
+
 var app = builder.Build();
 
 // If in development, use Swagger. good for seeing the API calls available and their documentation
@@ -43,9 +47,9 @@ using (var scope = app.Services.CreateScope())
             db.Categories.AddRange(categories);
         }
     }
-    
+
     if (File.Exists(pathProduct) && !db.Products.Any())
-    {        
+    {
         string jsonProducts = await File.ReadAllTextAsync(pathProduct);
         List<Product>? products = JsonSerializer.Deserialize<List<Product>>(jsonProducts);
         if (products != null)
@@ -56,6 +60,9 @@ using (var scope = app.Services.CreateScope())
         db.SaveChanges();
     }
 }
+
+app.MapCategoryEndpoints();
+app.MapProductEndpoints();
 
 app.Run();
 //needed for WebApplicationFactory in tests
