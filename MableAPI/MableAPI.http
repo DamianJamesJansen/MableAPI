@@ -1,3 +1,6 @@
+//this file can be used to test the API endpoints. I use the REST Client extension in VS Code
+//It allows for you to press a send request button above each request to test it out. Alternatively just use the swagger UI to test, or use postman. All should work.
+
 @MableAPI_HostAddress = http://localhost:5013
 
 GET {{MableAPI_HostAddress}}/
