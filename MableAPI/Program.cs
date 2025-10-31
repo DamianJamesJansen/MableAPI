@@ -25,5 +25,12 @@ app.UseHttpsRedirection();
 
 app.Run();
 
+//insert the initial data into the database
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+}
+
 //needed for WebApplicationFactory in tests
 public partial class Program { }
