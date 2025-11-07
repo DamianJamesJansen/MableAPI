@@ -1,4 +1,5 @@
 using MableAPI.Data;
+using Microsoft.EntityFrameworkCore;
 
 public class CategoryService
 {
@@ -21,5 +22,11 @@ public class CategoryService
             dbContext.Categories.Remove(category);
             await dbContext.SaveChangesAsync();
         }
+    }
+
+    public async Task<Category?> GetByNameAsync(string name)
+    {
+        // for some reason it doesn't like equals. weird
+        return await dbContext.Categories.FirstAsync(c => c.Name.ToLower() == name.ToLower());
     }
 }

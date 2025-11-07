@@ -1,4 +1,5 @@
 using MableAPI.Data;
+using Microsoft.EntityFrameworkCore;
 
 public class ProductService
 {
@@ -21,5 +22,13 @@ public class ProductService
             dbContext.Products.Remove(product);
             await dbContext.SaveChangesAsync();
         }
+    }
+
+    public async Task<List<Product>> GetByNameAsync(string name)
+    {
+        var products = dbContext.Products
+            .Where(p => p.Name.ToLower() == name.ToLower())
+            .ToListAsync();
+        return await products;
     }
 }
