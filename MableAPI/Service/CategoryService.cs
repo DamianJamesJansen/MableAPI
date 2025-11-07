@@ -12,4 +12,14 @@ public class CategoryService
     {
         return await dbContext.Categories.FindAsync(id);
     }
+
+    public async Task DeleteAsync(int id)
+    {
+        Category? category = await dbContext.Categories.FindAsync(id);
+        if (category != null)
+        {
+            dbContext.Categories.Remove(category);
+            await dbContext.SaveChangesAsync();
+        }
+    }
 }

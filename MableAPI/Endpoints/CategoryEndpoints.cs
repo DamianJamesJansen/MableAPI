@@ -4,7 +4,8 @@ public static class CategoryEndpoints
     {
         var group = routes.MapGroup("/Category");
 
-        group.MapGet("/{id}", GetById);
+        group.MapGet("/{id}", GetById).RequireAuthorization();
+        group.MapDelete("/{id}", DeleteById).RequireAuthorization();
         // group.MapGet("/{name}", GetByName);
         // group.MapPost("/", CreateCategory);
 
@@ -15,5 +16,11 @@ public static class CategoryEndpoints
     {
         Category? category = await service.GetAsync(id);
         return category != null ? Results.Ok(category) : Results.NotFound();
+    }
+
+    private static async Task<IResult> DeleteById(int id, CategoryService service)
+    {
+        await service.DeleteAsync(id);
+        return Results.Ok();
     }
 }

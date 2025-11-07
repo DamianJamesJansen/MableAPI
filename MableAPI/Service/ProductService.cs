@@ -12,4 +12,14 @@ public class ProductService
     {
         return await dbContext.Products.FindAsync(id);
     }
+
+    public async Task DeleteAsync(int id)
+    {
+        Product? product = await dbContext.Products.FindAsync(id);
+        if (product != null)
+        {
+            dbContext.Products.Remove(product);
+            await dbContext.SaveChangesAsync();
+        }
+    }
 }
