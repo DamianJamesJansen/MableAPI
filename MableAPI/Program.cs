@@ -7,6 +7,7 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,8 +48,16 @@ builder.Services.AddSwaggerGen(o =>
 
 
 // Add EF Core (SQLite)
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=app.db"));
+if (builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseInMemoryDatabase("TestDb"));
+}
+else
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseSqlite("Data Source=app.db"));
+}
 
 //In production the secrets won't be stored in the appsettings.json, but only now for the demo. Normally a vault or secret store is used
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

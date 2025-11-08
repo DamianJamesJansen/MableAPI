@@ -7,9 +7,9 @@ public static class CategoryEndpoints
         group.MapGet("/{id:int}", GetById).RequireAuthorization();
         group.MapDelete("/delete/{id}", DeleteById).RequireAuthorization();
 
-        group.MapGet("/{name}", GetByName);
-        // group.MapPost("/", CreateCategory);
-
+        group.MapGet("/{name}", GetByName).RequireAuthorization();
+        group.MapPost("/", CreateCategory).RequireAuthorization();
+        group.MapPut("/update/{id}", UpdateCategory).RequireAuthorization();
         return routes;
     }
 
@@ -29,5 +29,17 @@ public static class CategoryEndpoints
     {
         Category? category = await service.GetByNameAsync(name);
         return category != null ? Results.Ok(category) : Results.NotFound();
+    }
+
+    private static async Task<IResult> CreateCategory(Category category, CategoryService service)
+    {
+        bool isValid = await service.CreateAsync(category);
+        return isValid ? Results.Created($"/Category/{category.Id}", category) : Results.Conflict(new { message = "Category with the same name already exists." });
+    }
+
+    private static async Task<IResult> UpdateCategory(int id, Category updatedCategory, CategoryService service)
+    {
+        Category? updatedEntry = await service.UpdateCategory(id, updatedCategory);
+        return updatedEntry != null ? Results.Ok(updatedEntry) : Results.NotFound();
     }
 }

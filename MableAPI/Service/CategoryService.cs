@@ -29,4 +29,27 @@ public class CategoryService
         // for some reason it doesn't like equals. weird
         return await dbContext.Categories.FirstAsync(c => c.Name.ToLower() == name.ToLower());
     }
+
+    public async Task<bool> CreateAsync(Category category)
+    {
+        //check if already exists
+        if (await dbContext.Categories.AnyAsync(c => c.Name.ToLower() == category.Name.ToLower()))
+            return false;
+        dbContext.Categories.Add(category);
+        await dbContext.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<Category?> UpdateCategory(int id, Category updatedCategory)
+    {
+        // check if exists
+        Category? existingCategory = await GetAsync(id);
+        if (existingCategory == null)
+            return null;
+
+        existingCategory.Name = updatedCategory.Name;
+        dbContext.Categories.Update(existingCategory);
+        await dbContext.SaveChangesAsync();
+        return existingCategory;
+    }
 }
