@@ -11,11 +11,11 @@ public static class ProductEndpoints
         group.MapPost("/", CreateProduct).RequireAuthorization();
         group.MapPut("/update/{id}", UpdateProduct).RequireAuthorization();
 
-        group.MapGet("/getProductsGroupedByCategory", GetProductGrouped).RequireAuthorization();
+        group.MapGet("/getProductsGroupedandClassed", GetProductGroupedAndClassed).RequireAuthorization();
 
         group.MapPost("/makeFavorite/{id}", MakeProductFavorite).RequireAuthorization();
         group.MapPost("/removeFavorite/{id}", RemoveProductFavorite).RequireAuthorization();
-        group.MapGet("/GetFavoriteProducts", GetFavoriteProducts).RequireAuthorization();
+        group.MapGet("/getFavoriteProducts", GetFavoriteProducts).RequireAuthorization();
         return routes;
     }
 
@@ -49,9 +49,9 @@ public static class ProductEndpoints
         return updatedEntry != null ? Results.Ok(updatedEntry) : Results.NotFound();
     }
 
-    public static async Task<IResult> GetProductGrouped(ProductService service)
+    public static async Task<IResult> GetProductGroupedAndClassed(ProductService service)
     {
-        var result = await service.GetProductGroupedByCategoryAsync();
+        var result = await service.GetProductGroupedAndClassedAsync();
         return Results.Json(result);
     }
 

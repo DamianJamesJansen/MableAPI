@@ -1,8 +1,5 @@
-using System.Text.RegularExpressions;
 using MableAPI.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using Microsoft.VisualBasic;
 
 public class ProductService
 {
@@ -61,14 +58,26 @@ public class ProductService
         return existingProduct;
     }
 
-    public async Task<Dictionary<string, List<Product>>> GetProductGroupedByCategoryAsync()
+    //this is 2 requirements in one. Group per category and classify the items
+    public async Task<Dictionary<string, List<ProductClassified>>> GetProductGroupedAndClassedAsync()
     {
-        var result = await (
+        // Group the data by category names.
+        var groupedData = await (
             from p in dbContext.Products
             join c in dbContext.Categories on p.CategoryID equals c.Id
             group p by c.Name into g
-            select new { CategoryName = g.Key, Products = g.ToList() }
-        ).ToDictionaryAsync(x => x.CategoryName, x => x.Products);
+            select new
+            {
+                CategoryName = g.Key,
+                Products = g.ToList()
+            }
+        ).ToListAsync();
+
+        // now make it a dictionary where we instantly transform products into ProductClassified, which has some classification tags
+        var result = groupedData.ToDictionary(
+            x => x.CategoryName,
+            x => x.Products.Select(prod => new ProductClassified(prod, x.CategoryName)).ToList()
+        );
         return result;
     }
 
