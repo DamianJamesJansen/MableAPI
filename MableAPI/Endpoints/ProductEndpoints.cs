@@ -10,6 +10,12 @@ public static class ProductEndpoints
         group.MapGet("/{name}", GetByName).RequireAuthorization();
         group.MapPost("/", CreateProduct).RequireAuthorization();
         group.MapPut("/update/{id}", UpdateProduct).RequireAuthorization();
+
+        group.MapGet("/getProductsGroupedByCategory", GetProductGrouped).RequireAuthorization();
+
+        group.MapPost("/makeFavorite/{id}", MakeProductFavorite).RequireAuthorization();
+        group.MapPost("/removeFavorite/{id}", RemoveProductFavorite).RequireAuthorization();
+        group.MapGet("/GetFavoriteProducts", GetFavoriteProducts).RequireAuthorization();
         return routes;
     }
 
@@ -41,5 +47,27 @@ public static class ProductEndpoints
     {
         Product? updatedEntry = await service.UpdateProduct(id, updatedProduct);
         return updatedEntry != null ? Results.Ok(updatedEntry) : Results.NotFound();
+    }
+
+    public static async Task<IResult> GetProductGrouped(ProductService service)
+    {
+        var result = await service.GetProductGroupedByCategoryAsync();
+        return Results.Json(result);
+    }
+
+    public static async Task<IResult> MakeProductFavorite(int id, ProductService service)
+    {
+        return await service.MakeFavorite(id);
+    }
+
+    public static async Task<IResult> RemoveProductFavorite(int id, ProductService service)
+    {
+        return await service.RemoveFavorite(id);
+    }
+
+    public static async Task<IResult> GetFavoriteProducts(ProductService service)
+    {
+        var result = await service.GetFavoritesAsync();
+        return Results.Json(result);
     }
 }

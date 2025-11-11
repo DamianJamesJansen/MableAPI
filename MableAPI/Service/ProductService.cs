@@ -1,5 +1,8 @@
+using System.Text.RegularExpressions;
 using MableAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.VisualBasic;
 
 public class ProductService
 {
@@ -46,7 +49,7 @@ public class ProductService
         if (existingProduct == null)
             return null;
 
-        existingProduct.CategoryId = updatedProduct.CategoryId;
+        existingProduct.CategoryID = updatedProduct.CategoryID;
         existingProduct.Name = updatedProduct.Name;
         existingProduct.DateAdded = updatedProduct.DateAdded;
         existingProduct.Price = updatedProduct.Price;
@@ -56,5 +59,47 @@ public class ProductService
         dbContext.Products.Update(existingProduct);
         await dbContext.SaveChangesAsync();
         return existingProduct;
+    }
+
+    public async Task<Dictionary<string, List<Product>>> GetProductGroupedByCategoryAsync()
+    {
+        var result = await (
+            from p in dbContext.Products
+            join c in dbContext.Categories on p.CategoryID equals c.Id
+            group p by c.Name into g
+            select new { CategoryName = g.Key, Products = g.ToList() }
+        ).ToDictionaryAsync(x => x.CategoryName, x => x.Products);
+        return result;
+    }
+
+    public async Task<IResult> MakeFavorite(int productId)
+    {
+        Product? product = await dbContext.Products.FindAsync(productId);
+        if (product != null)
+        {
+            product.IsFavorite = true;
+            dbContext.Products.Update(product);
+            await dbContext.SaveChangesAsync();
+            return Results.Ok();
+        }
+        return Results.NotFound();
+    }
+
+    public async Task<IResult> RemoveFavorite(int productId)
+    {
+        Product? product = await dbContext.Products.FindAsync(productId);
+        if (product != null)
+        {
+            product.IsFavorite = false;
+            dbContext.Products.Update(product);
+            await dbContext.SaveChangesAsync();
+            return Results.Ok();
+        }
+        return Results.NotFound();
+    }
+
+    public async Task<List<Product>> GetFavoritesAsync()
+    {
+        return await dbContext.Products.Where(p => p.IsFavorite).ToListAsync();
     }
 }
