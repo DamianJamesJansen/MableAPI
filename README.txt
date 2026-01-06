@@ -4,7 +4,7 @@ Als je dotnet geinstalleerd hebt kan je in de terminal van het project in de sub
 De tests zijn uit te voeren door in de map MableAPI.Tests het commando 'dotnet test' uit te voeren
 
 Als je het project runt is de makkelijkste manier om de endpoints te checken via:
-localhost:5013/swagger/index.html (dit is een UI)
+localhost:5013/swagger/index.html (dit is een UI) (of je eigen lokale poort)
 Maar je kan ook via postman de endpoints testen.
 
 Alle endpoints behalve de login endpoint zijn beveiligd met een token, die token krijg je door de login endpoint aan te roepen
@@ -15,12 +15,6 @@ of als je postman gebruikt of curl. de header toevoegen: Authorization: Bearer <
 
 Op de swagger pagina kan je bij elke call "Try it out" klikken aan de rechter kant. Alle benodigdheden/voorbeeld data voor een call staat al klaar daar
 
-De database staat in de MableAPI/MableAPI map nadat het project 1 keer opgestart is.
-
-Voor extra requirements heb ik gekozen voor het groeperen per categorie en heb ik dat gecombineerd met het classificeren van producten.
-Voor het derde punt heb ik gekozen voor het favoriten van items. Je kan ook een lijst met favorieten opvragen.
-
-EntityFrameworkCore is gebruikt om de data van de database te gebruiken. Zelf had ik daar nog geen ervaring mee, maar het lijkt wel op XPO voor devexpress
-Het maakt voor makkelijke communicatie met data uit een database. Hierdoor heb je niet altijd pure sql nodig om data op te vragen. al kan dat wel.
+De database staat in de MableAPI/MableAPI map nadat het project 1 keer opgestart is
 
 Bij sommige comments laat ik zien dat ik dit in een groter of langer project anders zou doen, zoals authenticatie(Hardcoded login gegevens) en het gebruik van materiaal van een artikel
